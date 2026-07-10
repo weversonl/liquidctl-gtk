@@ -36,11 +36,15 @@ class DeviceController:
         self.pump_mode = "balanced"
         self._thread.start()
 
-    def refresh_devices(self, on_done: Callable[[list[DeviceInfo]], None]) -> None:
+    def refresh_devices(self, on_done: Callable[[list[DeviceInfo]], None], force_reinitialize: bool = False) -> None:
         def work():
             pairs = discover_devices()
             self._devices = {info.key: driver for info, driver in pairs}
             self._infos = {info.key: info for info, driver in pairs}
+            if force_reinitialize:
+                # e.g. after a suspend/resume: the device may have reset its onboard state even
+                # though its USB address (and thus our "already connected" bookkeeping) is unchanged.
+                self._connected.clear()
             for key, driver in self._devices.items():
                 if key not in self._connected:
                     driver.connect()

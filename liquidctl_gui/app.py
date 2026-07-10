@@ -13,6 +13,7 @@ from .appinfo import APP_ID  # noqa: E402
 from .backend.config_store import ConfigStore  # noqa: E402
 from .backend.controller import DeviceController  # noqa: E402
 from .backend.curve_engine import CurveEngine  # noqa: E402
+from .backend.sleep_monitor import SleepMonitor  # noqa: E402
 from .i18n import install  # noqa: E402
 
 _ = install()
@@ -29,6 +30,7 @@ class LiquidctlGuiApplication(Adw.Application):
         self.window: Adw.ApplicationWindow | None = None
         self.tray = None
         self._quitting = False
+        self.sleep_monitor = SleepMonitor(self._on_system_resume)
 
         self._apply_theme(self.config.get("theme", "system"))
 
@@ -60,8 +62,19 @@ class LiquidctlGuiApplication(Adw.Application):
         self.window.set_visible(False)
         return True
 
+    def _on_system_resume(self) -> None:
+        def on_devices_refreshed(devices) -> None:
+            if self.window is None:
+                return
+            self.window.devices = devices
+            self.window.on_active_device_changed()
+            self.window.lighting_page.reapply()
+
+        self.controller.refresh_devices(on_devices_refreshed, force_reinitialize=True)
+
     def quit_for_real(self) -> None:
         self._quitting = True
+        self.sleep_monitor.stop()
         self.curve_engine.stop_all()
         if self.window is not None:
             self.window.lighting_page._stop_animation()
