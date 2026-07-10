@@ -11,6 +11,27 @@ proper GNOME app instead of the command line.
 > different pump/fan hub, it's worth trying, but expect rough edges (a curve tab that doesn't
 > apply, a sensor that doesn't show up) until someone tests and fixes it for that specific device.
 
+## Screenshots
+
+<table>
+  <tr>
+    <td><img src="assets/dashboard.png" alt="Dashboard with live liquid temperature, pump and fan readings"></td>
+    <td><img src="assets/curve.png" alt="Draggable temperature x duty fan curve editor"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Dashboard</sub></td>
+    <td align="center"><sub>Curves</sub></td>
+  </tr>
+  <tr>
+    <td><img src="assets/colors.png" alt="Lighting page with modes, color picker and brightness"></td>
+    <td><img src="assets/profiles.png" alt="Saved profiles list with apply and delete actions"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Lighting</sub></td>
+    <td align="center"><sub>Profiles</sub></td>
+  </tr>
+</table>
+
 ## Features
 
 - **Dashboard** — live liquid temperature, pump and fan RPM/duty for the selected device.
@@ -42,8 +63,8 @@ proper GNOME app instead of the command line.
 ## Install
 
 ```bash
-git clone <this-repo>
-cd liquidctl-gui
+git clone https://github.com/weversonl/liquidctl-gtk
+cd liquidctl-gtk
 ./install.sh
 ```
 

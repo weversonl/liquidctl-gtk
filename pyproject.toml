@@ -14,6 +14,11 @@ dependencies = [
     "PyGObject>=3.44",
 ]
 
+[project.urls]
+Homepage = "https://github.com/weversonl/liquidctl-gtk"
+Repository = "https://github.com/weversonl/liquidctl-gtk"
+Issues = "https://github.com/weversonl/liquidctl-gtk/issues"
+
 [project.scripts]
 liquidctl-gui = "liquidctl_gui.__main__:main"
 
