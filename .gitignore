@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+*.egg-info/
+build/
+dist/
+
+# Translations (compiled/generated - rebuilt by install.sh)
+po/liquidctl-gui.pot
+po/locale/
+
+# Editor / OS cruft
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Internal maintainer docs - not part of the public project
+docs/
+
+.claude/

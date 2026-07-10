@@ -1,0 +1,326 @@
+# Brazilian Portuguese translation for liquidctl-gui.
+# Copyright (C) 2026
+# This file is distributed under the same license as the liquidctl-gui package.
+msgid ""
+msgstr ""
+"Project-Id-Version: liquidctl-gui\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-10 13:24-0300\n"
+"PO-Revision-Date: 2026-07-10 05:07-0300\n"
+"Last-Translator: \n"
+"Language-Team: Portuguese (Brazil)\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: liquidctl_gui/_tray_helper.py:50
+msgid "Show window"
+msgstr "Mostrar janela"
+
+#: liquidctl_gui/_tray_helper.py:56
+msgid "Quit"
+msgstr "Sair"
+
+#: liquidctl_gui/ui/page_curves.py:25 liquidctl_gui/ui/page_profiles.py:15
+msgid "Silent"
+msgstr "Silencioso"
+
+#: liquidctl_gui/ui/page_curves.py:26 liquidctl_gui/ui/page_curves.py:36
+#: liquidctl_gui/ui/page_profiles.py:16
+msgid "Balanced"
+msgstr "Equilibrado"
+
+#: liquidctl_gui/ui/page_curves.py:27 liquidctl_gui/ui/page_profiles.py:17
+msgid "Performance"
+msgstr "Performance"
+
+#: liquidctl_gui/ui/page_curves.py:28
+msgid "Custom"
+msgstr "Personalizado"
+
+#: liquidctl_gui/ui/page_curves.py:31 liquidctl_gui/ui/page_dashboard.py:54
+msgid "Pump"
+msgstr "Bomba"
+
+#: liquidctl_gui/ui/page_curves.py:31 liquidctl_gui/ui/page_dashboard.py:55
+msgid "Fan"
+msgstr "Ventoinha"
+
+#: liquidctl_gui/ui/page_curves.py:35
+msgid "Quiet"
+msgstr "Silencioso"
+
+#: liquidctl_gui/ui/page_curves.py:37
+msgid "Extreme"
+msgstr "Extremo"
+
+#: liquidctl_gui/ui/page_curves.py:252
+msgid "This device has no control for this channel."
+msgstr "Este dispositivo não possui controle para este canal."
+
+#: liquidctl_gui/ui/page_curves.py:258
+msgid "This pump only supports fixed modes, not a temperature curve."
+msgstr "Esta bomba só suporta modos fixos, não uma curva de temperatura."
+
+#: liquidctl_gui/ui/page_curves.py:281
+msgid ""
+"Drag points to adjust the curve, double-click to add a point, right-click a "
+"point to remove it."
+msgstr ""
+"Arraste os pontos para ajustar a curva, clique duplo para adicionar um "
+"ponto, clique direito num ponto para removê-lo."
+
+#: liquidctl_gui/ui/page_curves.py:286
+msgid "Restore default"
+msgstr "Restaurar padrão"
+
+#: liquidctl_gui/ui/page_dashboard.py:47
+msgid "Connected"
+msgstr "Conectado"
+
+#: liquidctl_gui/ui/page_dashboard.py:53
+msgid "Liquid temperature"
+msgstr "Temperatura do líquido"
+
+#: liquidctl_gui/ui/page_dashboard.py:59
+msgid ""
+"No liquidctl devices were detected. Check USB connections and udev "
+"permissions."
+msgstr ""
+"Nenhum dispositivo liquidctl foi detectado. Verifique as conexões USB e as "
+"permissões do udev."
+
+#: liquidctl_gui/ui/page_dashboard.py:114
+#: liquidctl_gui/ui/page_dashboard.py:118
+#, python-brace-format
+msgid "{rpm} RPM"
+msgstr "{rpm} RPM"
+
+#: liquidctl_gui/ui/page_dashboard.py:116
+#: liquidctl_gui/ui/page_dashboard.py:120
+#, python-brace-format
+msgid "{duty}% power"
+msgstr "{duty}% de potência"
+
+#: liquidctl_gui/ui/page_lighting.py:24
+msgid "Off"
+msgstr "Desligado"
+
+#: liquidctl_gui/ui/page_lighting.py:25
+msgid "Static"
+msgstr "Estática"
+
+#: liquidctl_gui/ui/page_lighting.py:26
+msgid "Breathing"
+msgstr "Respiração"
+
+#: liquidctl_gui/ui/page_lighting.py:27
+msgid "Pulse"
+msgstr "Pulso"
+
+#: liquidctl_gui/ui/page_lighting.py:28
+msgid "Spectrum"
+msgstr "Espectro"
+
+#: liquidctl_gui/ui/page_lighting.py:51
+msgid "This device has no RGB lighting."
+msgstr "Este dispositivo não possui iluminação RGB."
+
+#: liquidctl_gui/ui/page_lighting.py:59
+msgid "Mode"
+msgstr "Modo"
+
+#: liquidctl_gui/ui/page_lighting.py:78
+msgid "Color"
+msgstr "Cor"
+
+#: liquidctl_gui/ui/page_lighting.py:96
+msgid "Custom color"
+msgstr "Cor personalizada"
+
+#: liquidctl_gui/ui/page_lighting.py:117
+msgid "Speed"
+msgstr "Velocidade"
+
+#: liquidctl_gui/ui/page_lighting.py:129
+msgid "Brightness"
+msgstr "Brilho"
+
+#: liquidctl_gui/ui/page_profiles.py:15
+msgid "Prioritizes quiet operation, slightly higher temperatures"
+msgstr "Prioriza silêncio, temperaturas um pouco mais altas"
+
+#: liquidctl_gui/ui/page_profiles.py:16
+msgid "Good balance between noise and cooling"
+msgstr "Bom equilíbrio entre ruído e resfriamento"
+
+#: liquidctl_gui/ui/page_profiles.py:17
+msgid "Maximum cooling, more noise"
+msgstr "Resfriamento máximo, mais ruído"
+
+#: liquidctl_gui/ui/page_profiles.py:28
+msgid "Custom configuration in use — none of the profiles below match it."
+msgstr "Configuração personalizada em uso — nenhum dos perfis abaixo corresponde a ela."
+
+#: liquidctl_gui/ui/page_profiles.py:37
+msgid "New profile from current settings"
+msgstr "Novo perfil a partir das configurações atuais"
+
+#: liquidctl_gui/ui/page_profiles.py:66
+msgid "Active"
+msgstr "Ativo"
+
+#: liquidctl_gui/ui/page_profiles.py:70
+msgid "Apply"
+msgstr "Aplicar"
+
+#: liquidctl_gui/ui/page_profiles.py:77
+msgid "Delete profile"
+msgstr "Excluir perfil"
+
+#: liquidctl_gui/ui/page_profiles.py:99
+msgid "Delete profile?"
+msgstr "Excluir perfil?"
+
+#: liquidctl_gui/ui/page_profiles.py:100
+#, python-brace-format
+msgid "“{name}” will be permanently removed."
+msgstr "“{name}” será removido permanentemente."
+
+#: liquidctl_gui/ui/page_profiles.py:102 liquidctl_gui/ui/page_profiles.py:126
+msgid "Cancel"
+msgstr "Cancelar"
+
+#: liquidctl_gui/ui/page_profiles.py:103
+msgid "Delete"
+msgstr "Excluir"
+
+#: liquidctl_gui/ui/page_profiles.py:121
+msgid "New profile"
+msgstr "Novo perfil"
+
+#: liquidctl_gui/ui/page_profiles.py:122
+msgid "Give this profile a name. It will store the current pump/fan curves."
+msgstr ""
+"Dê um nome a este perfil. Ele vai guardar as curvas atuais de bomba/"
+"ventoinha."
+
+#: liquidctl_gui/ui/page_profiles.py:124
+msgid "Profile name"
+msgstr "Nome do perfil"
+
+#: liquidctl_gui/ui/page_profiles.py:127
+msgid "Create"
+msgstr "Criar"
+
+#: liquidctl_gui/ui/page_profiles.py:133
+msgid "Untitled profile"
+msgstr "Perfil sem nome"
+
+#: liquidctl_gui/ui/page_profiles.py:136
+msgid "Custom profile"
+msgstr "Perfil personalizado"
+
+#: liquidctl_gui/ui/page_settings.py:30
+msgid "Appearance"
+msgstr "Aparência"
+
+#: liquidctl_gui/ui/page_settings.py:31
+msgid "Theme"
+msgstr "Tema"
+
+#: liquidctl_gui/ui/page_settings.py:32
+msgid "System"
+msgstr "Sistema"
+
+#: liquidctl_gui/ui/page_settings.py:32
+msgid "Dark"
+msgstr "Escuro"
+
+#: liquidctl_gui/ui/page_settings.py:32
+msgid "Light"
+msgstr "Claro"
+
+#: liquidctl_gui/ui/page_settings.py:45
+msgid "Devices"
+msgstr "Dispositivos"
+
+#: liquidctl_gui/ui/page_settings.py:46
+msgid "Default device"
+msgstr "Dispositivo padrão"
+
+#: liquidctl_gui/ui/page_settings.py:47
+msgid "Which device to select when the app starts"
+msgstr "Qual dispositivo selecionar quando o app iniciar"
+
+#: liquidctl_gui/ui/page_settings.py:49 liquidctl_gui/ui/page_settings.py:106
+msgid "Auto (first detected)"
+msgstr "Automático (primeiro detectado)"
+
+#: liquidctl_gui/ui/page_settings.py:56
+msgid "Behavior"
+msgstr "Comportamento"
+
+#: liquidctl_gui/ui/page_settings.py:57
+msgid "Start with the system"
+msgstr "Iniciar com o sistema"
+
+#: liquidctl_gui/ui/page_settings.py:60
+msgid "High temperature notifications"
+msgstr "Notificações de temperatura alta"
+
+#: liquidctl_gui/ui/page_settings.py:65
+msgid "Units and monitoring"
+msgstr "Unidades e monitoramento"
+
+#: liquidctl_gui/ui/page_settings.py:66
+msgid "Temperature unit"
+msgstr "Unidade de temperatura"
+
+#: liquidctl_gui/ui/page_settings.py:77
+msgid "Polling interval"
+msgstr "Intervalo de leitura"
+
+#: liquidctl_gui/ui/page_settings.py:89
+msgid "About"
+msgstr "Sobre"
+
+#: liquidctl_gui/ui/page_settings.py:92
+msgid ""
+"This interface controls liquidctl, the open-source cross-platform tool for "
+"liquid coolers, fans and RGB lighting."
+msgstr ""
+"Esta interface controla o liquidctl, ferramenta open-source multiplataforma "
+"para refrigeração líquida, ventoinhas e iluminação RGB."
+
+#: liquidctl_gui/ui/sidebar.py:57 liquidctl_gui/ui/window.py:24
+msgid "Dashboard"
+msgstr "Painel"
+
+#: liquidctl_gui/ui/sidebar.py:58 liquidctl_gui/ui/window.py:25
+msgid "Curves"
+msgstr "Curvas"
+
+#: liquidctl_gui/ui/sidebar.py:59 liquidctl_gui/ui/window.py:26
+msgid "Lighting"
+msgstr "Iluminação"
+
+#: liquidctl_gui/ui/sidebar.py:60 liquidctl_gui/ui/window.py:27
+msgid "Profiles"
+msgstr "Perfis"
+
+#: liquidctl_gui/ui/sidebar.py:61 liquidctl_gui/ui/window.py:28
+msgid "Settings"
+msgstr "Configurações"
+
+#: liquidctl_gui/ui/sidebar.py:80
+#, python-brace-format
+msgid "liquidctl {version} · driver connected"
+msgstr "liquidctl {version} · driver conectado"
+
+#~ msgid "Drag the points to adjust the temperature × duty curve."
+#~ msgstr "Arraste os pontos para ajustar a curva de temperatura × potência."
+
+#~ msgid "Liquidctl"
+#~ msgstr "Liquidctl"

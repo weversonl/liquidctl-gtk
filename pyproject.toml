@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "liquidctl-gui"
+version = "0.1.0"
+description = "GTK4/libadwaita GUI for liquidctl"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "GPL-3.0-or-later" }
+dependencies = [
+    "liquidctl>=1.11.0",
+    "PyGObject>=3.44",
+]
+
+[project.scripts]
+liquidctl-gui = "liquidctl_gui.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["liquidctl_gui"]

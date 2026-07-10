@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=LiquidctlGTK
+Comment=Control liquid coolers, fans and RGB lighting via liquidctl
+Comment[pt_BR]=Controle refrigeração líquida, ventoinhas e iluminação RGB via liquidctl
+Exec=liquidctl-gui
+Icon=io.github.weversonl.LiquidctlGTK
+Terminal=false
+Categories=System;Utility;HardwareSettings;
+Keywords=liquidctl;cooling;fan;rgb;aio;pump;
+StartupNotify=true
+StartupWMClass=io.github.weversonl.LiquidctlGTK
