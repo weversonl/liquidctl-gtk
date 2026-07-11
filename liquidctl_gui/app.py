@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import sys
-
 import gi
 
 gi.require_version("Gtk", "4.0")
@@ -22,6 +20,11 @@ _ = install()
 class LiquidctlGuiApplication(Adw.Application):
     def __init__(self) -> None:
         super().__init__(application_id=APP_ID, flags=Gio.ApplicationFlags.FLAGS_NONE)
+        self.add_main_option(
+            "hidden", 0, GLib.OptionFlags.NONE, GLib.OptionArg.NONE,
+            "Start hidden in the tray", None,
+        )
+        self._start_hidden = False
         Gtk.Window.set_default_icon_name(APP_ID)
         self.config = ConfigStore()
         self.controller = DeviceController()
@@ -33,6 +36,10 @@ class LiquidctlGuiApplication(Adw.Application):
         self.sleep_monitor = SleepMonitor(self._on_system_resume)
 
         self._apply_theme(self.config.get("theme", "system"))
+
+    def do_handle_local_options(self, options: GLib.VariantDict) -> int:  # noqa: N802
+        self._start_hidden = options.contains("hidden")
+        return -1
 
     def do_activate(self) -> None:  # noqa: N802 - GObject virtual method name
         # do_activate only runs in the primary instance (locally, or via D-Bus Activate
@@ -53,7 +60,7 @@ class LiquidctlGuiApplication(Adw.Application):
             except Exception:
                 self.tray = None
 
-        if "--hidden" not in sys.argv:
+        if not self._start_hidden:
             self.window.present()
 
     def _on_close_request(self, *_args) -> bool:
