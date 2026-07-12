@@ -53,6 +53,13 @@ class SettingsPage(Gtk.Box):
         devices_group.add(default_device_row)
         self.append(devices_box)
 
+        enable_box, self.device_enable_group = _group(_("Enabled devices"))
+        self.device_enable_group.set_description(
+            _("Disabled devices are never connected to or controlled by the app.")
+        )
+        self._device_toggle_rows: dict[str, Adw.SwitchRow] = {}
+        self.append(enable_box)
+
         behavior_box, behavior_group = _group(_("Behavior"))
         autostart_row = Adw.SwitchRow(title=_("Start with the system"), active=config.get("autostart", False))
         autostart_row.connect("notify::active", self._on_autostart_toggled)
@@ -138,6 +145,28 @@ class SettingsPage(Gtk.Box):
         index = dropdown.get_selected()
         if 0 <= index < len(self._device_options):
             self.window.app.config.set("default_device", self._device_options[index])
+
+    def update_all_devices(self, infos) -> None:
+        for row in self._device_toggle_rows.values():
+            self.device_enable_group.remove(row)
+        self._device_toggle_rows.clear()
+
+        disabled = set(self.window.app.config.get("disabled_devices", []))
+        for info in infos:
+            row = Adw.SwitchRow(title=info.description, active=info.description not in disabled)
+            row.connect("notify::active", self._on_device_enabled_toggled, info.description)
+            self.device_enable_group.add(row)
+            self._device_toggle_rows[info.description] = row
+
+    def _on_device_enabled_toggled(self, row: "Adw.SwitchRow", _pspec, description: str) -> None:
+        disabled = set(self.window.app.config.get("disabled_devices", []))
+        if row.get_active():
+            disabled.discard(description)
+        else:
+            disabled.add(description)
+        self.window.app.config.set("disabled_devices", sorted(disabled))
+        self.window.app.controller.disabled_devices = disabled
+        self.window.refresh_devices()
 
     def _on_poll_changed(self, scale: Gtk.Scale) -> None:
         seconds = int(scale.get_value())

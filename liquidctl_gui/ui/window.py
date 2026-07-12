@@ -121,6 +121,7 @@ class LiquidctlGuiWindow(Adw.ApplicationWindow):
             self.active_device_key = (preferred or devices[0]).key
         self.sidebar.update_devices(devices, self.active_device_key)
         self.settings_page.update_devices(devices)
+        self.app.controller.list_all_devices(self.settings_page.update_all_devices)
         self.on_active_device_changed()
 
     def select_device(self, device_key: str) -> None:

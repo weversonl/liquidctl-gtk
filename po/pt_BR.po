@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: liquidctl-gui\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-12 00:24-0300\n"
+"POT-Creation-Date: 2026-07-12 01:18-0300\n"
 "PO-Revision-Date: 2026-07-10 05:07-0300\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese (Brazil)\n"
@@ -91,19 +91,19 @@ msgstr ""
 "Nenhum dispositivo liquidctl foi detectado. Verifique as conexões USB e as "
 "permissões do udev."
 
-#: liquidctl_gui/ui/page_dashboard.py:135
-#: liquidctl_gui/ui/page_dashboard.py:147
+#: liquidctl_gui/ui/page_dashboard.py:138
+#: liquidctl_gui/ui/page_dashboard.py:150
 #, python-brace-format
 msgid "{rpm} RPM"
 msgstr "{rpm} RPM"
 
-#: liquidctl_gui/ui/page_dashboard.py:137
-#: liquidctl_gui/ui/page_dashboard.py:149
+#: liquidctl_gui/ui/page_dashboard.py:140
+#: liquidctl_gui/ui/page_dashboard.py:152
 #, python-brace-format
 msgid "{duty}% power"
 msgstr "{duty}% de potência"
 
-#: liquidctl_gui/ui/page_dashboard.py:162
+#: liquidctl_gui/ui/page_dashboard.py:165
 #, python-brace-format
 msgid "Fan {n}: {rpm} RPM / {duty}%"
 msgstr "Ventoinha n° {n}: {rpm} RPM / {duty}%"
@@ -128,27 +128,43 @@ msgstr "Pulso"
 msgid "Spectrum"
 msgstr "Espectro"
 
-#: liquidctl_gui/ui/page_lighting.py:51
+#: liquidctl_gui/ui/page_lighting.py:29
+msgid "Rainbow"
+msgstr "Arco-íris"
+
+#: liquidctl_gui/ui/page_lighting.py:41
+msgid "Clockwise"
+msgstr "Horário"
+
+#: liquidctl_gui/ui/page_lighting.py:42
+msgid "Counterclockwise"
+msgstr "Anti-horário"
+
+#: liquidctl_gui/ui/page_lighting.py:64
 msgid "This device has no RGB lighting."
 msgstr "Este dispositivo não possui iluminação RGB."
 
-#: liquidctl_gui/ui/page_lighting.py:59
+#: liquidctl_gui/ui/page_lighting.py:72
 msgid "Mode"
 msgstr "Modo"
 
-#: liquidctl_gui/ui/page_lighting.py:78
+#: liquidctl_gui/ui/page_lighting.py:91
+msgid "Direction"
+msgstr "Direção"
+
+#: liquidctl_gui/ui/page_lighting.py:110
 msgid "Color"
 msgstr "Cor"
 
-#: liquidctl_gui/ui/page_lighting.py:96
+#: liquidctl_gui/ui/page_lighting.py:128
 msgid "Custom color"
 msgstr "Cor personalizada"
 
-#: liquidctl_gui/ui/page_lighting.py:117
+#: liquidctl_gui/ui/page_lighting.py:149
 msgid "Speed"
 msgstr "Velocidade"
 
-#: liquidctl_gui/ui/page_lighting.py:129
+#: liquidctl_gui/ui/page_lighting.py:161
 msgid "Brightness"
 msgstr "Brilho"
 
@@ -261,39 +277,47 @@ msgstr "Dispositivo padrão"
 msgid "Which device to select when the app starts"
 msgstr "Qual dispositivo selecionar quando o app iniciar"
 
-#: liquidctl_gui/ui/page_settings.py:49 liquidctl_gui/ui/page_settings.py:126
+#: liquidctl_gui/ui/page_settings.py:49 liquidctl_gui/ui/page_settings.py:133
 msgid "Auto (first detected)"
 msgstr "Automático (primeiro detectado)"
 
 #: liquidctl_gui/ui/page_settings.py:56
+msgid "Enabled devices"
+msgstr "Dispositivos habilitados"
+
+#: liquidctl_gui/ui/page_settings.py:58
+msgid "Disabled devices are never connected to or controlled by the app."
+msgstr "Dispositivos desabilitados nunca são conectados nem controlados pelo app."
+
+#: liquidctl_gui/ui/page_settings.py:63
 msgid "Behavior"
 msgstr "Comportamento"
 
-#: liquidctl_gui/ui/page_settings.py:57
+#: liquidctl_gui/ui/page_settings.py:64
 msgid "Start with the system"
 msgstr "Iniciar com o sistema"
 
-#: liquidctl_gui/ui/page_settings.py:60
+#: liquidctl_gui/ui/page_settings.py:67
 msgid "High temperature notifications"
 msgstr "Notificações de temperatura alta"
 
-#: liquidctl_gui/ui/page_settings.py:65
+#: liquidctl_gui/ui/page_settings.py:72
 msgid "Units and monitoring"
 msgstr "Unidades e monitoramento"
 
-#: liquidctl_gui/ui/page_settings.py:66
+#: liquidctl_gui/ui/page_settings.py:73
 msgid "Temperature unit"
 msgstr "Unidade de temperatura"
 
-#: liquidctl_gui/ui/page_settings.py:77
+#: liquidctl_gui/ui/page_settings.py:84
 msgid "Polling interval"
 msgstr "Intervalo de leitura"
 
-#: liquidctl_gui/ui/page_settings.py:89
+#: liquidctl_gui/ui/page_settings.py:96
 msgid "Fan duty validation interval"
 msgstr "Intervalo de validação da ventoinha"
 
-#: liquidctl_gui/ui/page_settings.py:91
+#: liquidctl_gui/ui/page_settings.py:98
 msgid ""
 "How often the app double-checks that fan speeds actually match the curve. "
 "Higher values use less CPU/USB traffic but take longer to catch a hardware "
@@ -303,11 +327,11 @@ msgstr ""
 "bate com a curva. Valores mais altos consomem menos CPU/tráfego USB, mas "
 "demoram mais para detectar uma falha do hardware."
 
-#: liquidctl_gui/ui/page_settings.py:109
+#: liquidctl_gui/ui/page_settings.py:116
 msgid "About"
 msgstr "Sobre"
 
-#: liquidctl_gui/ui/page_settings.py:112
+#: liquidctl_gui/ui/page_settings.py:119
 msgid ""
 "This interface controls liquidctl, the open-source cross-platform tool for "
 "liquid coolers, fans and RGB lighting."

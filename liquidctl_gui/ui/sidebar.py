@@ -90,12 +90,19 @@ class Sidebar(Gtk.Box):
         self.append(status_label)
 
     def update_devices(self, devices, active_key: str | None) -> None:
+        # Shrinking the model (e.g. a device gets disabled) makes GTK clamp the
+        # dropdown's own selection synchronously, mid-splice - firing notify::selected
+        # before _devices below is updated, so _on_device_selected would read the
+        # stale list and select the wrong device. Block the signal for the whole
+        # rebuild and only let our own explicit set_selected below take effect.
+        self._device_dropdown.handler_block_by_func(self._on_device_selected)
         self._device_model.splice(0, self._device_model.get_n_items(), [d.description for d in devices])
         for index, device in enumerate(devices):
             if device.key == active_key:
                 self._device_dropdown.set_selected(index)
                 break
         self._devices = devices
+        self._device_dropdown.handler_unblock_by_func(self._on_device_selected)
 
     def set_active_nav(self, page_name: str) -> None:
         row = self._nav_rows.get(page_name)

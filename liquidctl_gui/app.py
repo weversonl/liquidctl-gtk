@@ -29,6 +29,7 @@ class LiquidctlGuiApplication(Adw.Application):
         self.config = ConfigStore()
         self.controller = DeviceController()
         self.controller.pump_mode = self.config.get("pump_mode", "balanced")
+        self.controller.disabled_devices = set(self.config.get("disabled_devices", []))
         self.curve_engine = CurveEngine(
             self.controller,
             poll_seconds=self.config.get("poll_interval", 2),

@@ -29,6 +29,7 @@ DEFAULTS = {
     "autostart": False,
     "notifications": True,
     "default_device": None,  # device description to select on startup; None = first device found
+    "disabled_devices": [],  # device descriptions the app should never connect to or control
     "window_width": 1080,
     "window_height": 680,
     "window_maximized": False,

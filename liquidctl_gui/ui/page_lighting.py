@@ -19,16 +19,28 @@ _ = install()
 # there is no on-device animation. Breathing/pulse/spectrum are driven from here instead,
 # by repeatedly pushing a computed 'fixed' color, matching the driver's own guidance
 # ("animations still require successive calls to this API").
-MODES = ["off", "static", "breathing", "pulse", "spectrum"]
+MODES = ["off", "static", "breathing", "pulse", "spectrum", "rainbow"]
 MODE_LABELS = {
     "off": _("Off"),
     "static": _("Static"),
     "breathing": _("Breathing"),
     "pulse": _("Pulse"),
     "spectrum": _("Spectrum"),
+    "rainbow": _("Rainbow"),
 }
-ANIMATED_MODES = {"breathing", "pulse", "spectrum"}
+ANIMATED_MODES = {"breathing", "pulse", "spectrum", "rainbow"}
 DRIVER_MODE = {"off": "off", "static": "fixed"}  # animated modes resolve to "fixed" per tick
+
+# 'rainbow' addresses each LED individually via 'super-fixed' - only devices that expose
+# more than one individually-addressable LED (DeviceInfo.led_count) can use it, e.g. the
+# HydroPlatinum family's pump-head ring (16 LEDs on the H150i Elite).
+RAINBOW_MIN_LEDS = 2
+
+DIRECTIONS = ["clockwise", "counterclockwise"]
+DIRECTION_LABELS = {
+    "clockwise": _("Clockwise"),
+    "counterclockwise": _("Counterclockwise"),
+}
 
 SWATCHES = ["#3584e4", "#33d17a", "#e5a50a", "#e01b24", "#9141ac", "#62a0ea", "#f66151", "#ffffff"]
 ANIMATION_TICK_MS = 100
@@ -44,6 +56,7 @@ class LightingPage(Gtk.Box):
         self._color = cfg.get("color", "#3584e4")
         self._speed = cfg.get("speed", 50)
         self._brightness = cfg.get("brightness", 80)
+        self._direction = cfg.get("direction", "clockwise")
         self._anim_timeout_id: int | None = None
         self._anim_start_time = 0.0
 
@@ -73,6 +86,25 @@ class LightingPage(Gtk.Box):
             self.mode_box.append(btn)
         self.content_box.append(self.mode_box)
         self._update_mode_highlight()
+
+        self.direction_section = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        direction_header = Gtk.Label(label=_("Direction"), halign=Gtk.Align.START, css_classes=["heading"])
+        self.direction_section.append(direction_header)
+        self.direction_box = Adw.WrapBox(child_spacing=8, line_spacing=8)
+        self._direction_buttons: dict[str, Gtk.ToggleButton] = {}
+        first_direction = None
+        for direction in DIRECTIONS:
+            btn = Gtk.ToggleButton(label=DIRECTION_LABELS[direction], css_classes=["pill"])
+            if first_direction is None:
+                first_direction = btn
+            else:
+                btn.set_group(first_direction)
+            btn.set_active(direction == self._direction)
+            btn.connect("toggled", lambda b, d=direction: b.get_active() and self._set_direction(d))
+            self._direction_buttons[direction] = btn
+            self.direction_box.append(btn)
+        self.direction_section.append(self.direction_box)
+        self.content_box.append(self.direction_section)
 
         self.color_section = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
         color_header = Gtk.Label(label=_("Color"), halign=Gtk.Align.START, css_classes=["heading"])
@@ -143,6 +175,12 @@ class LightingPage(Gtk.Box):
         supported = device is not None and device.has_lighting
         self.unsupported_label.set_visible(not supported)
         self.content_box.set_visible(supported)
+
+        rainbow_supported = device is not None and device.led_count >= RAINBOW_MIN_LEDS
+        self._mode_buttons["rainbow"].set_visible(rainbow_supported)
+        if self._mode == "rainbow" and not rainbow_supported:
+            self._mode_buttons["static"].set_active(True)  # triggers _set_mode via "toggled"
+
         if supported:
             self._start_or_push()
         else:
@@ -158,11 +196,16 @@ class LightingPage(Gtk.Box):
         self._start_or_push()
         self._update_mode_highlight()
 
+    def _set_direction(self, direction: str) -> None:
+        self._direction = direction
+        self._persist()
+
     def _update_mode_sections(self) -> None:
         is_off = self._mode == "off"
-        self.color_section.set_visible(not is_off)
+        self.color_section.set_visible(not is_off and self._mode != "rainbow")
         self.brightness_section.set_visible(not is_off)
         self.speed_section.set_visible(not is_off and self._mode in ANIMATED_MODES)
+        self.direction_section.set_visible(self._mode == "rainbow")
 
     def _update_mode_highlight(self) -> None:
         for mode, button in self._mode_buttons.items():
@@ -219,8 +262,8 @@ class LightingPage(Gtk.Box):
 
     def _persist(self) -> None:
         self.window.app.config.set("lighting", {
-            "mode": self._mode, "color": self._color,
-            "speed": self._speed, "brightness": self._brightness,
+            "mode": self._mode, "color": self._color, "speed": self._speed,
+            "brightness": self._brightness, "direction": self._direction,
         })
 
     # -- device push / animation loop ------------------------------------------------
@@ -248,6 +291,10 @@ class LightingPage(Gtk.Box):
         elapsed = time.monotonic() - self._anim_start_time
         period = 4.5 - (self._speed / 100) * 4.0  # 4.5s at speed=0 down to ~0.5s at speed=100
         phase = (elapsed % period) / period
+
+        if self._mode == "rainbow":
+            self._push_rainbow(device, phase)
+            return GLib.SOURCE_CONTINUE
 
         base_r, base_g, base_b = self._hex_to_rgb(self._color)
         brightness = self._brightness / 100
@@ -284,3 +331,15 @@ class LightingPage(Gtk.Box):
         driver_mode = "off" if self._mode == "off" else "fixed"
         colors = [] if driver_mode == "off" else [rgb]
         self.window.app.controller.set_color(device.key, "led", driver_mode, colors)
+
+    def _push_rainbow(self, device, phase: float) -> None:
+        if device.led_count < RAINBOW_MIN_LEDS:
+            return
+        brightness = self._brightness / 100
+        turn = -phase if self._direction == "clockwise" else phase
+        colors = []
+        for led_index in range(device.led_count):
+            hue = (led_index / device.led_count + turn) % 1.0
+            r, g, b = colorsys.hsv_to_rgb(hue, 1.0, brightness)
+            colors.append((round(r * 255), round(g * 255), round(b * 255)))
+        self.window.app.controller.set_color(device.key, "led", "super-fixed", colors)

@@ -35,12 +35,39 @@ class DeviceController:
         self._infos: dict[str, DeviceInfo] = {}
         self._connected: set[str] = set()
         self.pump_mode = "balanced"
+        self.disabled_devices: set[str] = set()
         self._thread.start()
+
+    def list_all_devices(self, on_done: Callable[[list[DeviceInfo]], None]) -> None:
+        """Lists every liquidctl device found, including disabled ones - for the
+        Settings page's enable/disable toggles. discover_devices() only enumerates
+        and constructs driver objects, it never calls connect()/initialize(), so
+        this is safe to run even for devices the user has disabled."""
+
+        def work():
+            return [info for info, _driver in discover_devices()]
+
+        self._submit(work, on_done)
 
     def refresh_devices(self, on_done: Callable[[list[DeviceInfo]], None], force_reinitialize: bool = False) -> None:
         def work():
-            pairs = discover_devices()
-            self._devices = {info.key: driver for info, driver in pairs}
+            pairs = [
+                (info, driver) for info, driver in discover_devices()
+                if info.description not in self.disabled_devices
+            ]
+            new_devices = {info.key: driver for info, driver in pairs}
+
+            # Release devices that are no longer enabled (or no longer present) so a
+            # disabled device gets its USB handle closed instead of just forgotten.
+            for key, driver in self._devices.items():
+                if key not in new_devices:
+                    try:
+                        driver.disconnect()
+                    except Exception:
+                        pass
+                    self._connected.discard(key)
+
+            self._devices = new_devices
             self._infos = {info.key: info for info, driver in pairs}
             if force_reinitialize:
                 # e.g. after a suspend/resume: the device may have reset its onboard state even

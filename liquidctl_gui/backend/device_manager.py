@@ -15,6 +15,7 @@ class DeviceInfo:
     pump_mode_only: bool
     has_fan: bool
     has_lighting: bool
+    led_count: int = 0
     channel_names: list[str] = field(default_factory=list)
 
 
@@ -61,6 +62,7 @@ def discover_devices() -> list[tuple[DeviceInfo, object]]:
             pump_mode_only=pump_mode_only,
             has_fan=has_fan,
             has_lighting=has_lighting,
+            led_count=getattr(driver, "_led_count", 0),
         )
         results.append((info, driver))
     return results
