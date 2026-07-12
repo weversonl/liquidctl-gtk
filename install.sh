@@ -12,14 +12,16 @@ BIN_DIR="$HOME/.local/bin"
 LAUNCHER="$BIN_DIR/liquidctl-gui"
 APPLICATIONS_DIR="$HOME/.local/share/applications"
 ICON_DIR="$HOME/.local/share/icons/hicolor/scalable/apps"
+SYMBOLIC_ICON_DIR="$HOME/.local/share/icons/hicolor/symbolic/apps"
 DESKTOP_FILE="$APPLICATIONS_DIR/$APP_ID.desktop"
 ICON_FILE="$ICON_DIR/$APP_ID.svg"
+SYMBOLIC_ICON_FILE="$SYMBOLIC_ICON_DIR/$APP_ID-symbolic.svg"
 AUTOSTART_FILE="$HOME/.config/autostart/$APP_ID.desktop"
 
 if [[ "${1:-}" == "--uninstall" ]]; then
     echo "==> Removing LiquidctlGTK"
     rm -rf "$INSTALL_DIR"
-    rm -f "$LAUNCHER" "$DESKTOP_FILE" "$ICON_FILE" "$AUTOSTART_FILE"
+    rm -f "$LAUNCHER" "$DESKTOP_FILE" "$ICON_FILE" "$SYMBOLIC_ICON_FILE" "$AUTOSTART_FILE"
     command -v update-desktop-database >/dev/null && update-desktop-database "$APPLICATIONS_DIR" 2>/dev/null || true
     command -v gtk-update-icon-cache >/dev/null && gtk-update-icon-cache "$HOME/.local/share/icons/hicolor" 2>/dev/null || true
     echo "Done. Your config/curves at ~/.config/liquidctl-gui were left untouched."
@@ -64,9 +66,10 @@ EOF
 chmod +x "$LAUNCHER"
 
 echo "==> Installing desktop entry and icon"
-mkdir -p "$APPLICATIONS_DIR" "$ICON_DIR"
+mkdir -p "$APPLICATIONS_DIR" "$ICON_DIR" "$SYMBOLIC_ICON_DIR"
 sed "s|^Exec=.*|Exec=$LAUNCHER|" "$REPO_DIR/data/$APP_ID.desktop" >"$DESKTOP_FILE"
 cp "$REPO_DIR/data/$APP_ID.svg" "$ICON_FILE"
+cp "$REPO_DIR/data/$APP_ID-symbolic.svg" "$SYMBOLIC_ICON_FILE"
 
 command -v update-desktop-database >/dev/null && update-desktop-database "$APPLICATIONS_DIR" 2>/dev/null || true
 command -v gtk-update-icon-cache >/dev/null && gtk-update-icon-cache "$HOME/.local/share/icons/hicolor" 2>/dev/null || true

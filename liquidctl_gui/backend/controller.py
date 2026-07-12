@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import queue
 import threading
+import time
 from dataclasses import dataclass
 from typing import Callable
 
@@ -52,6 +53,12 @@ class DeviceController:
                         driver.initialize(pump_mode=self.pump_mode)
                     else:
                         driver.initialize()
+                    # HydroPlatinum's 3-fan variant writes fan3 via a second HID report
+                    # right after initialize()'s own report; a command sent too soon after
+                    # (e.g. the first curve push) can race it and leave fan3 with a stale/
+                    # wrong duty. Confirmed by direct liquidctl reproduction - 0.3s was still
+                    # flaky (2/4 trials), 1.0s was reliable (4/4 real trials).
+                    time.sleep(1.0)
                     self._connected.add(key)
             return list(self._infos.values())
 

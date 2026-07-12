@@ -46,7 +46,15 @@ proper GNOME app instead of the command line.
 - **Profiles** — save/apply/delete named bundles of fan+pump curves.
 - **Tray** — closing the window keeps the app running in the background (curves need a live
   process to keep re-applying, since liquidctl itself has no daemon) until you quit from the
-  tray menu.
+  tray menu. Uses a symbolic (theme-matched, monochrome) tray icon like other well-behaved
+  GNOME apps.
+- **Start with the system** — an optional autostart entry that launches straight into the tray,
+  no window popping up on login.
+- **Self-healing fan duty validation** — some multi-fan coolers can occasionally desync a fan's
+  duty from the rest on a firmware-level hiccup (confirmed on the Hydro Platinum's 3-fan variant).
+  The app periodically re-checks that every fan actually matches the curve and silently resends
+  it if one has drifted. The check interval is configurable in Settings — higher values use less
+  CPU/USB traffic, lower values catch a glitch faster.
 - **Locale-aware** — Portuguese (`pt_BR`) if that's your system locale, English everywhere else.
 - Remembers window size, sidebar width, theme and default device between launches.
 

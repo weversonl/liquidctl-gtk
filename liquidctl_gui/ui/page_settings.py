@@ -84,6 +84,26 @@ class SettingsPage(Gtk.Box):
         self.poll_scale.connect("value-changed", self._on_poll_changed)
         poll_row.add_suffix(self.poll_scale)
         units_group.add(poll_row)
+
+        validation_row = Adw.ActionRow(
+            title=_("Fan duty validation interval"),
+            subtitle=_(
+                "How often the app double-checks that fan speeds actually match the curve. "
+                "Higher values use less CPU/USB traffic but take longer to catch a hardware glitch."
+            ),
+        )
+        validation_row.set_subtitle_lines(3)
+        self.validation_scale = Gtk.Scale(
+            orientation=Gtk.Orientation.HORIZONTAL,
+            adjustment=Gtk.Adjustment(
+                value=config.get("fan_validation_interval", 60), lower=15, upper=300, step_increment=15
+            ),
+            hexpand=True, valign=Gtk.Align.CENTER, digits=0, draw_value=True,
+        )
+        self.validation_scale.set_size_request(220, -1)
+        self.validation_scale.connect("value-changed", self._on_validation_interval_changed)
+        validation_row.add_suffix(self.validation_scale)
+        units_group.add(validation_row)
         self.append(units_box)
 
         about_box, about_group = _group(_("About"))
@@ -123,6 +143,11 @@ class SettingsPage(Gtk.Box):
         seconds = int(scale.get_value())
         self.window.app.config.set("poll_interval", seconds)
         self.window.app.curve_engine.set_poll_interval(seconds)
+
+    def _on_validation_interval_changed(self, scale: Gtk.Scale) -> None:
+        seconds = int(scale.get_value())
+        self.window.app.config.set("fan_validation_interval", seconds)
+        self.window.app.curve_engine.set_validation_interval(seconds)
 
     def _on_autostart_toggled(self, row: "Adw.SwitchRow", _pspec) -> None:
         enabled = row.get_active()

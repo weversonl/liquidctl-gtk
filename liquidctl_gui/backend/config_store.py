@@ -25,6 +25,7 @@ DEFAULTS = {
     "theme": "system",
     "temp_unit": "C",
     "poll_interval": 2,
+    "fan_validation_interval": 60,
     "autostart": False,
     "notifications": True,
     "default_device": None,  # device description to select on startup; None = first device found

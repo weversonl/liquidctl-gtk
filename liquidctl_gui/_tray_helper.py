@@ -21,7 +21,7 @@ from gi.repository import AyatanaAppIndicator3, Gtk  # noqa: E402
 from .appinfo import APP_ID, APP_NAME  # noqa: E402
 from .i18n import DOMAIN, _LOCALE_DIR, _detect_language  # noqa: E402
 
-ICON_NAME = APP_ID
+ICON_NAME = f"{APP_ID}-symbolic"
 FALLBACK_ICON_NAME = "utilities-system-monitor-symbolic"
 
 

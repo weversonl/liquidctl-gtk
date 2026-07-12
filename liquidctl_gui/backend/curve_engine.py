@@ -17,6 +17,19 @@ from .controller import DeviceController
 
 DEFAULT_POLL_SECONDS = 2
 
+# HydroPlatinum's 3-fan variant writes fan3 via a second HID report sent right
+# before the main one; this occasionally races on the firmware side (not just at
+# startup) and leaves fan3 at a stale/wrong duty. Rather than trust a fixed
+# delay, periodically re-read status and resend if the fans disagree by more
+# than this many percentage points - confirmed by direct liquidctl reproduction
+# that a resend reliably corrects it. The interval is user-configurable (see
+# Settings): this only needs to catch a rare firmware hiccup, not track
+# temperature in real time (the device already does that on its own for a
+# native profile), so a slower interval trades a bit of reaction time for
+# less USB traffic/CPU.
+_FAN_DUTY_TOLERANCE = 5
+DEFAULT_VALIDATION_SECONDS = 60
+
 
 def interpolate_duty(curve: list[tuple[float, float]], temp: float) -> int:
     points = sorted(curve, key=lambda p: p[0])
@@ -43,14 +56,21 @@ class _ChannelJob:
     temp_sensor_key: str
     software_fallback: bool = False
     timeout_id: int | None = None
+    validation_timeout_id: int | None = None
 
 
 class CurveEngine:
     """Applies one curve per (device, channel) and keeps software-fallback ones ticking."""
 
-    def __init__(self, controller: DeviceController, poll_seconds: int = DEFAULT_POLL_SECONDS) -> None:
+    def __init__(
+        self,
+        controller: DeviceController,
+        poll_seconds: int = DEFAULT_POLL_SECONDS,
+        validation_seconds: int = DEFAULT_VALIDATION_SECONDS,
+    ) -> None:
         self._controller = controller
         self._poll_seconds = poll_seconds
+        self._validation_seconds = validation_seconds
         self._jobs: dict[tuple[str, str], _ChannelJob] = {}
 
     def set_poll_interval(self, seconds: int) -> None:
@@ -59,6 +79,15 @@ class CurveEngine:
             if job.software_fallback and job.timeout_id is not None:
                 GLib.source_remove(job.timeout_id)
                 job.timeout_id = GLib.timeout_add_seconds(self._poll_seconds, self._tick, job)
+
+    def set_validation_interval(self, seconds: int) -> None:
+        self._validation_seconds = max(5, seconds)
+        for job in list(self._jobs.values()):
+            if job.validation_timeout_id is not None:
+                GLib.source_remove(job.validation_timeout_id)
+                job.validation_timeout_id = GLib.timeout_add_seconds(
+                    self._validation_seconds, self._validate_fan_duty, job
+                )
 
     def apply_curve(self, device_key: str, channel: str, curve: list[tuple[float, float]], temp_sensor_key: str) -> None:
         key = (device_key, channel)
@@ -78,18 +107,39 @@ class CurveEngine:
                 GLib.source_remove(job.timeout_id)
                 job.timeout_id = None
                 job.software_fallback = False
+            if channel == "fan" and job.validation_timeout_id is None:
+                job.validation_timeout_id = GLib.timeout_add_seconds(
+                    self._validation_seconds, self._validate_fan_duty, job
+                )
 
         self._controller.set_speed_profile(device_key, channel, sorted(curve), on_done=on_done, on_error=on_error)
+
+    def _validate_fan_duty(self, job: _ChannelJob) -> bool:
+        if (job.device_key, job.channel) not in self._jobs:
+            job.validation_timeout_id = None
+            return GLib.SOURCE_REMOVE
+
+        def on_status(status) -> None:
+            duties = [value for key, value, _unit in status if "fan" in key.lower() and "duty" in key.lower()]
+            if len(duties) >= 2 and max(duties) - min(duties) > _FAN_DUTY_TOLERANCE:
+                self._controller.set_speed_profile(job.device_key, job.channel, sorted(job.curve))
+
+        self._controller.get_status(job.device_key, on_status)
+        return GLib.SOURCE_CONTINUE
 
     def stop_channel(self, device_key: str, channel: str) -> None:
         job = self._jobs.pop((device_key, channel), None)
         if job and job.timeout_id is not None:
             GLib.source_remove(job.timeout_id)
+        if job and job.validation_timeout_id is not None:
+            GLib.source_remove(job.validation_timeout_id)
 
     def stop_all(self) -> None:
         for job in self._jobs.values():
             if job.timeout_id is not None:
                 GLib.source_remove(job.timeout_id)
+            if job.validation_timeout_id is not None:
+                GLib.source_remove(job.validation_timeout_id)
         self._jobs.clear()
 
     def _start_software_loop(self, job: _ChannelJob) -> None:

@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: liquidctl-gui\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-10 13:24-0300\n"
+"POT-Creation-Date: 2026-07-12 00:12-0300\n"
 "PO-Revision-Date: 2026-07-10 05:07-0300\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese (Brazil)\n"
@@ -161,7 +161,9 @@ msgstr "Resfriamento máximo, mais ruído"
 
 #: liquidctl_gui/ui/page_profiles.py:28
 msgid "Custom configuration in use — none of the profiles below match it."
-msgstr "Configuração personalizada em uso — nenhum dos perfis abaixo corresponde a ela."
+msgstr ""
+"Configuração personalizada em uso — nenhum dos perfis abaixo corresponde a "
+"ela."
 
 #: liquidctl_gui/ui/page_profiles.py:37
 msgid "New profile from current settings"
@@ -179,46 +181,46 @@ msgstr "Aplicar"
 msgid "Delete profile"
 msgstr "Excluir perfil"
 
-#: liquidctl_gui/ui/page_profiles.py:99
+#: liquidctl_gui/ui/page_profiles.py:96
 msgid "Delete profile?"
 msgstr "Excluir perfil?"
 
-#: liquidctl_gui/ui/page_profiles.py:100
+#: liquidctl_gui/ui/page_profiles.py:97
 #, python-brace-format
 msgid "“{name}” will be permanently removed."
 msgstr "“{name}” será removido permanentemente."
 
-#: liquidctl_gui/ui/page_profiles.py:102 liquidctl_gui/ui/page_profiles.py:126
+#: liquidctl_gui/ui/page_profiles.py:99 liquidctl_gui/ui/page_profiles.py:123
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: liquidctl_gui/ui/page_profiles.py:103
+#: liquidctl_gui/ui/page_profiles.py:100
 msgid "Delete"
 msgstr "Excluir"
 
-#: liquidctl_gui/ui/page_profiles.py:121
+#: liquidctl_gui/ui/page_profiles.py:118
 msgid "New profile"
 msgstr "Novo perfil"
 
-#: liquidctl_gui/ui/page_profiles.py:122
+#: liquidctl_gui/ui/page_profiles.py:119
 msgid "Give this profile a name. It will store the current pump/fan curves."
 msgstr ""
 "Dê um nome a este perfil. Ele vai guardar as curvas atuais de bomba/"
 "ventoinha."
 
-#: liquidctl_gui/ui/page_profiles.py:124
+#: liquidctl_gui/ui/page_profiles.py:121
 msgid "Profile name"
 msgstr "Nome do perfil"
 
-#: liquidctl_gui/ui/page_profiles.py:127
+#: liquidctl_gui/ui/page_profiles.py:124
 msgid "Create"
 msgstr "Criar"
 
-#: liquidctl_gui/ui/page_profiles.py:133
+#: liquidctl_gui/ui/page_profiles.py:130
 msgid "Untitled profile"
 msgstr "Perfil sem nome"
 
-#: liquidctl_gui/ui/page_profiles.py:136
+#: liquidctl_gui/ui/page_profiles.py:133
 msgid "Custom profile"
 msgstr "Perfil personalizado"
 
@@ -254,7 +256,7 @@ msgstr "Dispositivo padrão"
 msgid "Which device to select when the app starts"
 msgstr "Qual dispositivo selecionar quando o app iniciar"
 
-#: liquidctl_gui/ui/page_settings.py:49 liquidctl_gui/ui/page_settings.py:106
+#: liquidctl_gui/ui/page_settings.py:49 liquidctl_gui/ui/page_settings.py:126
 msgid "Auto (first detected)"
 msgstr "Automático (primeiro detectado)"
 
@@ -283,10 +285,24 @@ msgid "Polling interval"
 msgstr "Intervalo de leitura"
 
 #: liquidctl_gui/ui/page_settings.py:89
+msgid "Fan duty validation interval"
+msgstr "Intervalo de validação da ventoinha"
+
+#: liquidctl_gui/ui/page_settings.py:91
+msgid ""
+"How often the app double-checks that fan speeds actually match the curve. "
+"Higher values use less CPU/USB traffic but take longer to catch a hardware "
+"glitch."
+msgstr ""
+"Com que frequência o app confere se a velocidade das ventoinhas realmente "
+"bate com a curva. Valores mais altos consomem menos CPU/tráfego USB, mas "
+"demoram mais para detectar uma falha do hardware."
+
+#: liquidctl_gui/ui/page_settings.py:109
 msgid "About"
 msgstr "Sobre"
 
-#: liquidctl_gui/ui/page_settings.py:92
+#: liquidctl_gui/ui/page_settings.py:112
 msgid ""
 "This interface controls liquidctl, the open-source cross-platform tool for "
 "liquid coolers, fans and RGB lighting."

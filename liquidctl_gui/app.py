@@ -29,7 +29,11 @@ class LiquidctlGuiApplication(Adw.Application):
         self.config = ConfigStore()
         self.controller = DeviceController()
         self.controller.pump_mode = self.config.get("pump_mode", "balanced")
-        self.curve_engine = CurveEngine(self.controller, poll_seconds=self.config.get("poll_interval", 2))
+        self.curve_engine = CurveEngine(
+            self.controller,
+            poll_seconds=self.config.get("poll_interval", 2),
+            validation_seconds=self.config.get("fan_validation_interval", 60),
+        )
         self.window: Adw.ApplicationWindow | None = None
         self.tray = None
         self._quitting = False
