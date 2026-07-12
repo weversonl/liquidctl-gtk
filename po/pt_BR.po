@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: liquidctl-gui\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-12 01:18-0300\n"
+"POT-Creation-Date: 2026-07-12 02:10-0300\n"
 "PO-Revision-Date: 2026-07-10 05:07-0300\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese (Brazil)\n"
@@ -132,41 +132,69 @@ msgstr "Espectro"
 msgid "Rainbow"
 msgstr "Arco-íris"
 
-#: liquidctl_gui/ui/page_lighting.py:41
+#: liquidctl_gui/ui/page_lighting.py:30
+msgid "Comet"
+msgstr "Cometa"
+
+#: liquidctl_gui/ui/page_lighting.py:31
+msgid "Wave"
+msgstr "Onda"
+
+#: liquidctl_gui/ui/page_lighting.py:32
+msgid "Police Lights"
+msgstr "Luzes de Polícia"
+
+#: liquidctl_gui/ui/page_lighting.py:33
+msgid "Reactive"
+msgstr "Reativo"
+
+#: liquidctl_gui/ui/page_lighting.py:55
 msgid "Clockwise"
 msgstr "Horário"
 
-#: liquidctl_gui/ui/page_lighting.py:42
+#: liquidctl_gui/ui/page_lighting.py:56
 msgid "Counterclockwise"
 msgstr "Anti-horário"
 
-#: liquidctl_gui/ui/page_lighting.py:64
+#: liquidctl_gui/ui/page_lighting.py:92 liquidctl_gui/ui/page_lighting.py:182
 msgid "This device has no RGB lighting."
 msgstr "Este dispositivo não possui iluminação RGB."
 
-#: liquidctl_gui/ui/page_lighting.py:72
+#: liquidctl_gui/ui/page_lighting.py:100
 msgid "Mode"
 msgstr "Modo"
 
-#: liquidctl_gui/ui/page_lighting.py:91
+#: liquidctl_gui/ui/page_lighting.py:119
 msgid "Direction"
 msgstr "Direção"
 
-#: liquidctl_gui/ui/page_lighting.py:110
+#: liquidctl_gui/ui/page_lighting.py:139
 msgid "Color"
 msgstr "Cor"
 
-#: liquidctl_gui/ui/page_lighting.py:128
-msgid "Custom color"
-msgstr "Cor personalizada"
+#: liquidctl_gui/ui/page_lighting.py:146
+msgid "Second color"
+msgstr "Segunda cor"
 
-#: liquidctl_gui/ui/page_lighting.py:149
+#: liquidctl_gui/ui/page_lighting.py:152
 msgid "Speed"
 msgstr "Velocidade"
 
-#: liquidctl_gui/ui/page_lighting.py:161
+#: liquidctl_gui/ui/page_lighting.py:164
 msgid "Brightness"
 msgstr "Brilho"
+
+#: liquidctl_gui/ui/page_lighting.py:185
+msgid ""
+"This device has RGB lighting, but its protocol isn't supported by this app "
+"yet."
+msgstr ""
+"Este dispositivo tem iluminação RGB, mas o protocolo dele ainda não é "
+"suportado por este app."
+
+#: liquidctl_gui/ui/page_lighting.py:257
+msgid "Custom color"
+msgstr "Cor personalizada"
 
 #: liquidctl_gui/ui/page_profiles.py:15
 msgid "Prioritizes quiet operation, slightly higher temperatures"
@@ -181,67 +209,94 @@ msgid "Maximum cooling, more noise"
 msgstr "Resfriamento máximo, mais ruído"
 
 #: liquidctl_gui/ui/page_profiles.py:28
+msgid "This device has no pump or fan control — profiles don't apply to it."
+msgstr ""
+"Este dispositivo não tem controle de bomba ou ventoinha — perfis não se "
+"aplicam a ele."
+
+#: liquidctl_gui/ui/page_profiles.py:37
 msgid "Custom configuration in use — none of the profiles below match it."
 msgstr ""
 "Configuração personalizada em uso — nenhum dos perfis abaixo corresponde a "
 "ela."
 
-#: liquidctl_gui/ui/page_profiles.py:37
+#: liquidctl_gui/ui/page_profiles.py:46
 msgid "New profile from current settings"
 msgstr "Novo perfil a partir das configurações atuais"
 
-#: liquidctl_gui/ui/page_profiles.py:66
+#: liquidctl_gui/ui/page_profiles.py:78
 msgid "Active"
 msgstr "Ativo"
 
-#: liquidctl_gui/ui/page_profiles.py:70
+#: liquidctl_gui/ui/page_profiles.py:82
 msgid "Apply"
 msgstr "Aplicar"
 
-#: liquidctl_gui/ui/page_profiles.py:77
+#: liquidctl_gui/ui/page_profiles.py:89
 msgid "Delete profile"
 msgstr "Excluir perfil"
 
-#: liquidctl_gui/ui/page_profiles.py:96
+#: liquidctl_gui/ui/page_profiles.py:98
+msgid "No device selected — nothing to apply the profile to."
+msgstr "Nenhum dispositivo selecionado — não há nada para aplicar o perfil."
+
+#: liquidctl_gui/ui/page_profiles.py:105
+msgid "pump"
+msgstr "bomba"
+
+#: liquidctl_gui/ui/page_profiles.py:105
+msgid "fan"
+msgstr "ventoinha"
+
+#: liquidctl_gui/ui/page_profiles.py:116
+#, python-brace-format
+msgid ""
+"This device doesn't support {channels} control — that part of the profile "
+"wasn't applied."
+msgstr ""
+"Este dispositivo não suporta controle de {channels} — essa parte do perfil "
+"não foi aplicada."
+
+#: liquidctl_gui/ui/page_profiles.py:124
 msgid "Delete profile?"
 msgstr "Excluir perfil?"
 
-#: liquidctl_gui/ui/page_profiles.py:97
+#: liquidctl_gui/ui/page_profiles.py:125
 #, python-brace-format
 msgid "“{name}” will be permanently removed."
 msgstr "“{name}” será removido permanentemente."
 
-#: liquidctl_gui/ui/page_profiles.py:99 liquidctl_gui/ui/page_profiles.py:123
+#: liquidctl_gui/ui/page_profiles.py:127 liquidctl_gui/ui/page_profiles.py:151
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: liquidctl_gui/ui/page_profiles.py:100
+#: liquidctl_gui/ui/page_profiles.py:128
 msgid "Delete"
 msgstr "Excluir"
 
-#: liquidctl_gui/ui/page_profiles.py:118
+#: liquidctl_gui/ui/page_profiles.py:146
 msgid "New profile"
 msgstr "Novo perfil"
 
-#: liquidctl_gui/ui/page_profiles.py:119
+#: liquidctl_gui/ui/page_profiles.py:147
 msgid "Give this profile a name. It will store the current pump/fan curves."
 msgstr ""
 "Dê um nome a este perfil. Ele vai guardar as curvas atuais de bomba/"
 "ventoinha."
 
-#: liquidctl_gui/ui/page_profiles.py:121
+#: liquidctl_gui/ui/page_profiles.py:149
 msgid "Profile name"
 msgstr "Nome do perfil"
 
-#: liquidctl_gui/ui/page_profiles.py:124
+#: liquidctl_gui/ui/page_profiles.py:152
 msgid "Create"
 msgstr "Criar"
 
-#: liquidctl_gui/ui/page_profiles.py:130
+#: liquidctl_gui/ui/page_profiles.py:158
 msgid "Untitled profile"
 msgstr "Perfil sem nome"
 
-#: liquidctl_gui/ui/page_profiles.py:133
+#: liquidctl_gui/ui/page_profiles.py:161
 msgid "Custom profile"
 msgstr "Perfil personalizado"
 
@@ -266,58 +321,71 @@ msgid "Light"
 msgstr "Claro"
 
 #: liquidctl_gui/ui/page_settings.py:45
+msgid "Language"
+msgstr "Idioma"
+
+#: liquidctl_gui/ui/page_settings.py:45
+msgid "Requires restarting the app to take effect"
+msgstr "Requer reiniciar o app para ter efeito"
+
+#: liquidctl_gui/ui/page_settings.py:50
+msgid "Auto (system)"
+msgstr "Automático (sistema)"
+
+#: liquidctl_gui/ui/page_settings.py:63
 msgid "Devices"
 msgstr "Dispositivos"
 
-#: liquidctl_gui/ui/page_settings.py:46
+#: liquidctl_gui/ui/page_settings.py:64
 msgid "Default device"
 msgstr "Dispositivo padrão"
 
-#: liquidctl_gui/ui/page_settings.py:47
+#: liquidctl_gui/ui/page_settings.py:65
 msgid "Which device to select when the app starts"
 msgstr "Qual dispositivo selecionar quando o app iniciar"
 
-#: liquidctl_gui/ui/page_settings.py:49 liquidctl_gui/ui/page_settings.py:133
+#: liquidctl_gui/ui/page_settings.py:67 liquidctl_gui/ui/page_settings.py:151
 msgid "Auto (first detected)"
 msgstr "Automático (primeiro detectado)"
 
-#: liquidctl_gui/ui/page_settings.py:56
+#: liquidctl_gui/ui/page_settings.py:74
 msgid "Enabled devices"
 msgstr "Dispositivos habilitados"
 
-#: liquidctl_gui/ui/page_settings.py:58
+#: liquidctl_gui/ui/page_settings.py:76
 msgid "Disabled devices are never connected to or controlled by the app."
-msgstr "Dispositivos desabilitados nunca são conectados nem controlados pelo app."
+msgstr ""
+"Dispositivos desabilitados nunca são conectados nem controlados pelo app."
 
-#: liquidctl_gui/ui/page_settings.py:63
+#: liquidctl_gui/ui/page_settings.py:81
 msgid "Behavior"
 msgstr "Comportamento"
 
-#: liquidctl_gui/ui/page_settings.py:64
+#: liquidctl_gui/ui/page_settings.py:82
 msgid "Start with the system"
 msgstr "Iniciar com o sistema"
 
-#: liquidctl_gui/ui/page_settings.py:67
+#: liquidctl_gui/ui/page_settings.py:85
 msgid "High temperature notifications"
 msgstr "Notificações de temperatura alta"
 
-#: liquidctl_gui/ui/page_settings.py:72
+#: liquidctl_gui/ui/page_settings.py:90
 msgid "Units and monitoring"
 msgstr "Unidades e monitoramento"
 
-#: liquidctl_gui/ui/page_settings.py:73
+#: liquidctl_gui/ui/page_settings.py:91
 msgid "Temperature unit"
 msgstr "Unidade de temperatura"
 
-#: liquidctl_gui/ui/page_settings.py:84
+#: liquidctl_gui/ui/page_settings.py:102
 msgid "Polling interval"
 msgstr "Intervalo de leitura"
 
-#: liquidctl_gui/ui/page_settings.py:96
+#: liquidctl_gui/ui/page_settings.py:114
 msgid "Fan duty validation interval"
 msgstr "Intervalo de validação da ventoinha"
 
-#: liquidctl_gui/ui/page_settings.py:98
+#: liquidctl_gui/ui/page_settings.py:116
 msgid ""
 "How often the app double-checks that fan speeds actually match the curve. "
 "Higher values use less CPU/USB traffic but take longer to catch a hardware "
@@ -327,17 +395,21 @@ msgstr ""
 "bate com a curva. Valores mais altos consomem menos CPU/tráfego USB, mas "
 "demoram mais para detectar uma falha do hardware."
 
-#: liquidctl_gui/ui/page_settings.py:116
+#: liquidctl_gui/ui/page_settings.py:134
 msgid "About"
 msgstr "Sobre"
 
-#: liquidctl_gui/ui/page_settings.py:119
+#: liquidctl_gui/ui/page_settings.py:137
 msgid ""
 "This interface controls liquidctl, the open-source cross-platform tool for "
 "liquid coolers, fans and RGB lighting."
 msgstr ""
 "Esta interface controla o liquidctl, ferramenta open-source multiplataforma "
 "para refrigeração líquida, ventoinhas e iluminação RGB."
+
+#: liquidctl_gui/ui/page_settings.py:192
+msgid "Restart the app for the new language to take effect."
+msgstr "Reinicie o app para o novo idioma ter efeito."
 
 #: liquidctl_gui/ui/sidebar.py:57 liquidctl_gui/ui/window.py:24
 msgid "Dashboard"

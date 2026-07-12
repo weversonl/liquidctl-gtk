@@ -15,7 +15,19 @@ DOMAIN = "liquidctl-gui"
 _LOCALE_DIR = os.path.join(os.path.dirname(__file__), "..", "po", "locale")
 
 
+def _language_override() -> str | None:
+    try:
+        from .backend.config_store import ConfigStore
+        language = ConfigStore().get("language", "auto")
+    except Exception:
+        return None
+    return language if language in ("pt_BR", "en_US") else None
+
+
 def _detect_language() -> str:
+    override = _language_override()
+    if override is not None:
+        return override
     for env_var in ("LANGUAGE", "LC_ALL", "LC_MESSAGES", "LANG"):
         value = os.environ.get(env_var)
         if value:

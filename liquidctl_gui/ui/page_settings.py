@@ -40,6 +40,24 @@ class SettingsPage(Gtk.Box):
         )
         theme_row.add_suffix(self.theme_dropdown)
         appearance_group.add(theme_row)
+
+        language_row = Adw.ActionRow(
+            title=_("Language"), subtitle=_("Requires restarting the app to take effect")
+        )
+        # The language names themselves aren't translated - "Português (Brasil)" and
+        # "English" should read the same regardless of which language the UI is in.
+        self.language_dropdown = Gtk.DropDown.new_from_strings(
+            [_("Auto (system)"), "Português (Brasil)", "English"]
+        )
+        language_values = ["auto", "pt_BR", "en_US"]
+        current_language = config.get("language", "auto")
+        self.language_dropdown.set_selected(
+            language_values.index(current_language) if current_language in language_values else 0
+        )
+        self.language_dropdown.set_valign(Gtk.Align.CENTER)
+        self.language_dropdown.connect("notify::selected", self._on_language_changed)
+        language_row.add_suffix(self.language_dropdown)
+        appearance_group.add(language_row)
         self.append(appearance_box)
 
         devices_box, devices_group = _group(_("Devices"))
@@ -167,6 +185,11 @@ class SettingsPage(Gtk.Box):
         self.window.app.config.set("disabled_devices", sorted(disabled))
         self.window.app.controller.disabled_devices = disabled
         self.window.refresh_devices()
+
+    def _on_language_changed(self, dropdown: Gtk.DropDown, _pspec) -> None:
+        language_values = ["auto", "pt_BR", "en_US"]
+        self.window.app.config.set("language", language_values[dropdown.get_selected()])
+        self.window.show_toast(_("Restart the app for the new language to take effect."))
 
     def _on_poll_changed(self, scale: Gtk.Scale) -> None:
         seconds = int(scale.get_value())

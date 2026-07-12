@@ -38,14 +38,27 @@ PUMP_MODE_LABELS = {
 }
 
 
-class CurveGraph(Gtk.DrawingArea):
-    """Editable temperature -> duty curve, drawn and dragged directly on a Cairo surface."""
+def _format_axis_temp(celsius: float, unit: str) -> str:
+    if unit == "F":
+        return f"{round(celsius * 9 / 5 + 32)}°F"
+    return f"{int(celsius)}°C"
 
-    def __init__(self, on_point_moved) -> None:
+
+class CurveGraph(Gtk.DrawingArea):
+    """Editable temperature -> duty curve, drawn and dragged directly on a Cairo surface.
+
+    Curve points are always stored/interpreted in Celsius - that's what liquidctl expects
+    on the wire. get_temp_unit is called fresh on every draw so the axis label always
+    reflects the current Settings choice, without needing anything to explicitly notify
+    this widget when that setting changes elsewhere.
+    """
+
+    def __init__(self, on_point_moved, get_temp_unit) -> None:
         super().__init__(hexpand=True, vexpand=False, content_width=280, content_height=300)
         self.set_draw_func(self._draw)
         self.points: list[tuple[float, float]] = list(PRESET_CURVES["balanced"])
         self._on_point_moved = on_point_moved
+        self._get_temp_unit = get_temp_unit
         self._drag_index: int | None = None
 
         drag = Gtk.GestureDrag()
@@ -175,9 +188,10 @@ class CurveGraph(Gtk.DrawingArea):
             cr.move_to(PAD_L - 8 - extents.width, y + extents.height / 2)
             cr.show_text(label)
 
+        unit = self._get_temp_unit()
         for temp in range(TMIN, TMAX + 1, 10):
             x = self._temp_to_x(temp)
-            label = f"{temp}°C"
+            label = _format_axis_temp(temp, unit)
             extents = cr.text_extents(label)
             cr.move_to(x - extents.width / 2, height - PAD_B + 18)
             cr.show_text(label)
@@ -271,7 +285,9 @@ class CurvesPage(Gtk.Box):
             self.pump_mode_box.append(button)
         self.append(self.pump_mode_box)
 
-        self.graph = CurveGraph(self._on_points_moved)
+        self.graph = CurveGraph(
+            self._on_points_moved, lambda: self.window.app.config.get("temp_unit", "C")
+        )
         self.graph_frame = Gtk.Frame(child=self.graph, margin_top=6)
         self.append(self.graph_frame)
 
@@ -415,14 +431,16 @@ class CurvesPage(Gtk.Box):
             self.window.app.config.set("active_profile_id", None)
         self.window.profiles_page.refresh()
 
-    def set_curve_for_channel(self, channel: str, curve: list[tuple[float, float]], preset: str) -> None:
+    def set_curve_for_channel(self, channel: str, curve: list[tuple[float, float]], preset: str) -> bool:
+        """Returns False (without touching anything) if the active device doesn't
+        support this channel - callers should tell the user it was skipped."""
         device = self.window.active_device
         if device is None:
-            return
+            return False
         if channel == "pump" and not device.has_pump_control:
-            return  # e.g. pump_mode_only devices have no duty curve to set
+            return False  # e.g. pump_mode_only devices have no duty curve to set
         if channel == "fan" and not device.has_fan:
-            return
+            return False
         key = (device.key, channel)
         curve = list(curve)
         self._curves[key] = curve
@@ -431,6 +449,7 @@ class CurvesPage(Gtk.Box):
         if channel == self.channel:
             self.graph.set_points(curve)
             self._update_preset_highlight()
+        return True
         self._apply_to_device(key, curve)
 
     def _persist_curve(self, key: tuple[str, str], curve: list[tuple[float, float]], preset: str) -> None:

@@ -23,6 +23,7 @@ PRESET_CURVES = {
 
 DEFAULTS = {
     "theme": "system",
+    "language": "auto",  # "auto" follows the system locale; otherwise an explicit "pt_BR"/"en_US"
     "temp_unit": "C",
     "poll_interval": 2,
     "fan_validation_interval": 60,

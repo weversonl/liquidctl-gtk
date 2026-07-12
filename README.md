@@ -43,10 +43,22 @@ proper GNOME app instead of the command line.
   support hardware speed profiles.
 - **Pump mode** — for devices without continuous pump duty control (like the Hydro Platinum
   family), a simple quiet/balanced/extreme switch instead of a curve that wouldn't apply.
-- **Lighting** — off/static/breathing/pulse/spectrum, a quick color palette plus a native
-  GNOME color picker, brightness and animation speed. Animated modes are driven host-side when
-  the hardware itself has no on-device animation support.
+- **Lighting** — off/static/breathing/pulse/spectrum, plus per-LED effects for devices with more
+  than one individually-addressable LED (e.g. the Hydro Platinum family's pump-head ring):
+  **Rainbow**, **Comet**, **Wave** and **Police Lights** (with direction, speed and — for Police —
+  two independently-picked colors), and a **Reactive** mode that shifts green → yellow → red with
+  the live liquid temperature. A quick color palette plus a native GNOME color picker, brightness
+  and animation speed round it out. Animated modes are driven host-side when the hardware itself
+  has no on-device animation support.
 - **Profiles** — save/apply/delete named bundles of fan+pump curves.
+- **Per-device enable/disable** — in Settings, turn off any detected device you don't want this
+  app touching at all (it's never connected to or initialized). Handy if, say, you only want it
+  managing your cooler and not another RGB controller on the same system.
+- **Clear hardware-limit messaging** — every page tells you plainly when the active device can't
+  do something, instead of silently doing nothing or showing controls that don't work: Curves,
+  Lighting and Profiles each show a specific explanation (e.g. "this device has RGB lighting, but
+  its protocol isn't supported by this app yet"), and applying a profile warns if part of it
+  (pump or fan) couldn't be applied to the selected device.
 - **Tray** — closing the window keeps the app running in the background (curves need a live
   process to keep re-applying, since liquidctl itself has no daemon) until you quit from the
   tray menu. Uses a symbolic (theme-matched, monochrome) tray icon like other well-behaved

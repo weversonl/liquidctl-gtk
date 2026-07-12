@@ -99,10 +99,15 @@ class LiquidctlGuiWindow(Adw.ApplicationWindow):
         # which could still be as small as 1px.
         self.split_view.set_position(max(180, application.config.get("sidebar_width", 280)))
         self.split_view.connect("notify::position", self._schedule_geometry_save)
-        self.set_content(self.split_view)
+
+        self.toast_overlay = Adw.ToastOverlay(child=self.split_view)
+        self.set_content(self.toast_overlay)
 
         self.navigate("dashboard")
         self.refresh_devices()
+
+    def show_toast(self, message: str) -> None:
+        self.toast_overlay.add_toast(Adw.Toast(title=message, timeout=4))
 
     def navigate(self, page_name: str) -> None:
         self.view_stack.set_visible_child_name(page_name)
@@ -142,6 +147,7 @@ class LiquidctlGuiWindow(Adw.ApplicationWindow):
         self.dashboard_page.on_device_changed()
         self.curves_page.on_device_changed()
         self.lighting_page.on_device_changed()
+        self.profiles_page.on_device_changed()
 
     def _schedule_geometry_save(self, *_args) -> None:
         if self._geometry_save_id is not None:

@@ -24,26 +24,38 @@ class ProfilesPage(Gtk.Box):
                           margin_top=24, margin_bottom=32, margin_start=28, margin_end=28)
         self.window = window
 
+        self.unsupported_label = Gtk.Label(
+            label=_("This device has no pump or fan control — profiles don't apply to it."),
+            wrap=True, css_classes=["dim-label"], margin_top=40,
+        )
+        self.append(self.unsupported_label)
+
+        self.content_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
+        self.append(self.content_box)
+
         self.custom_label = Gtk.Label(
             label=_("Custom configuration in use — none of the profiles below match it."),
             halign=Gtk.Align.START, wrap=True, css_classes=["dim-label", "caption"],
         )
-        self.append(self.custom_label)
+        self.content_box.append(self.custom_label)
 
         self.list_box = Gtk.ListBox(css_classes=["boxed-list"], selection_mode=Gtk.SelectionMode.NONE)
-        self.append(self.list_box)
+        self.content_box.append(self.list_box)
 
         add_button = Gtk.Button(
             label=_("New profile from current settings"),
             css_classes=["flat"], margin_top=8,
         )
         add_button.connect("clicked", self._on_add_profile)
-        self.append(add_button)
+        self.content_box.append(add_button)
 
         self._rebuild()
 
     def on_device_changed(self) -> None:
-        pass
+        device = self.window.active_device
+        supported = device is not None and (device.has_pump_control or device.has_fan)
+        self.unsupported_label.set_visible(not supported)
+        self.content_box.set_visible(supported)
 
     def refresh(self) -> None:
         self._rebuild()
@@ -82,12 +94,28 @@ class ProfilesPage(Gtk.Box):
             self.list_box.append(row)
 
     def _apply_profile(self, profile: dict) -> None:
+        if self.window.active_device_key is None:
+            self.window.show_toast(_("No device selected — nothing to apply the profile to."))
+            return
+
         self.window.app.config.set("active_profile_id", profile["id"])
         preset_marker = profile["id"] if profile["id"] in BUILTIN_PROFILE_INFO else "custom"
-        for channel, curve_key in (("pump", "pump_curve"), ("fan", "fan_curve")):
+        skipped_channels = []
+        for channel, curve_key, label in (
+            ("pump", "pump_curve", _("pump")), ("fan", "fan_curve", _("fan")),
+        ):
             curve = profile.get(curve_key)
-            if curve and self.window.active_device_key:
-                self.window.curves_page.set_curve_for_channel(channel, [tuple(p) for p in curve], preset_marker)
+            if not curve:
+                continue
+            applied = self.window.curves_page.set_curve_for_channel(channel, [tuple(p) for p in curve], preset_marker)
+            if not applied:
+                skipped_channels.append(label)
+
+        if skipped_channels:
+            self.window.show_toast(
+                _("This device doesn't support {channels} control — that part of the profile wasn't applied.")
+                .format(channels=", ".join(skipped_channels))
+            )
         self._rebuild()
 
     def _confirm_delete_profile(self, profile: dict) -> None:
