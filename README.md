@@ -34,7 +34,10 @@ proper GNOME app instead of the command line.
 
 ## Features
 
-- **Dashboard** — live liquid temperature, pump and fan RPM/duty for the selected device.
+- **Dashboard** — live liquid temperature, pump and fan RPM/duty for the selected device, plus a
+  discreet bottom bar with host CPU temperature and a per-fan RPM/duty breakdown (both fully
+  dynamic: shows your actual CPU model and however many fans your device reports, wraps to a
+  second line instead of overflowing on a narrow window).
 - **Curves** — a draggable temperature × duty graph per channel (add/remove points, presets, or
   freehand). Falls back automatically to host-side polling for devices whose driver doesn't
   support hardware speed profiles.
@@ -52,9 +55,10 @@ proper GNOME app instead of the command line.
   no window popping up on login.
 - **Self-healing fan duty validation** — some multi-fan coolers can occasionally desync a fan's
   duty from the rest on a firmware-level hiccup (confirmed on the Hydro Platinum's 3-fan variant).
-  The app periodically re-checks that every fan actually matches the curve and silently resends
-  it if one has drifted. The check interval is configurable in Settings — higher values use less
-  CPU/USB traffic, lower values catch a glitch faster.
+  Right after applying a curve, the app double-checks quickly a few times until every fan actually
+  matches it; once settled, it switches to a slower steady check so it isn't hammering the device
+  forever. That steady interval is configurable in Settings — higher values use less CPU/USB
+  traffic, lower values catch a glitch faster.
 - **Locale-aware** — Portuguese (`pt_BR`) if that's your system locale, English everywhere else.
 - Remembers window size, sidebar width, theme and default device between launches.
 

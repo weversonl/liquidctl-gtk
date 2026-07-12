@@ -1,15 +1,20 @@
 from __future__ import annotations
 
+import re
+
 import gi
 
 gi.require_version("Gtk", "4.0")
 gi.require_version("Adw", "1")
 
-from gi.repository import Adw, GLib, Gtk  # noqa: E402
+from gi.repository import Adw, GLib, Gtk, Pango  # noqa: E402
 
+from ..backend import system_sensors  # noqa: E402
 from ..i18n import install  # noqa: E402
 
 _ = install()
+
+_FAN_KEY_RE = re.compile(r"fan\s*(\d+)", re.IGNORECASE)
 
 
 def _card(title: str) -> tuple[Gtk.Box, Gtk.Label, Gtk.Label]:
@@ -62,6 +67,22 @@ class DashboardPage(Gtk.Box):
         self.append(self.empty_label)
         self.empty_label.set_visible(False)
 
+        # Deliberately NOT appended into this page: it lives in the window's
+        # Adw.ToolbarView bottom bar instead (see window.py), which stays pinned to
+        # the window edge outside the scrollable content - unlike a child of this
+        # page, it can never be pushed off-screen or require scrolling to reach.
+        self.system_box = Adw.WrapBox(child_spacing=16, line_spacing=2,
+                                       halign=Gtk.Align.END, margin_top=6, margin_bottom=6,
+                                       margin_start=12, margin_end=12)
+        self.cpu_label = Gtk.Label(halign=Gtk.Align.END, css_classes=["dim-label", "caption"],
+                                    ellipsize=Pango.EllipsizeMode.END, max_width_chars=40)
+        self.system_box.append(self.cpu_label)
+
+        self._cpu_name = system_sensors.get_cpu_name()
+        self._fan_detail_labels: list[Gtk.Label] = []
+        self._update_cpu()
+        GLib.timeout_add_seconds(2, self._update_cpu)
+
     def on_device_changed(self) -> None:
         if self._timeout_id is not None:
             GLib.source_remove(self._timeout_id)
@@ -106,18 +127,57 @@ class DashboardPage(Gtk.Box):
 
     def _on_status(self, status) -> None:
         unit = self.window.app.config.get("temp_unit", "C")
+        fans: dict[int, dict[str, float]] = {}
+
         for key, value, raw_unit in status:
             lower_key = key.lower()
+            match = _FAN_KEY_RE.search(lower_key)
             if "liquid temperature" in lower_key:
                 self.liquid_temp_value.set_label(self._format_temp(value, unit))
             elif lower_key.startswith("pump speed"):
                 self.pump_value.set_label(_("{rpm} RPM").format(rpm=int(value)))
             elif lower_key.startswith("pump duty"):
                 self.pump_sub.set_label(_("{duty}% power").format(duty=int(value)))
-            elif lower_key.startswith("fan speed") or (lower_key.startswith("fan") and "speed" in lower_key):
-                self.fan_value.set_label(_("{rpm} RPM").format(rpm=int(value)))
-            elif lower_key.startswith("fan duty") or (lower_key.startswith("fan") and "duty" in lower_key):
-                self.fan_sub.set_label(_("{duty}% power").format(duty=int(value)))
+            elif match and "speed" in lower_key:
+                fans.setdefault(int(match.group(1)), {})["rpm"] = value
+            elif match and "duty" in lower_key:
+                fans.setdefault(int(match.group(1)), {})["duty"] = value
+
+        if fans:
+            rpms = [f["rpm"] for f in fans.values() if "rpm" in f]
+            duties = [f["duty"] for f in fans.values() if "duty" in f]
+            if rpms:
+                self.fan_value.set_label(_("{rpm} RPM").format(rpm=round(sum(rpms) / len(rpms))))
+            if duties:
+                self.fan_sub.set_label(_("{duty}% power").format(duty=round(sum(duties) / len(duties))))
+
+        self._update_fan_details(fans)
+
+    def _update_fan_details(self, fans: dict[int, dict[str, float]]) -> None:
+        for label in self._fan_detail_labels:
+            self.system_box.remove(label)
+        self._fan_detail_labels.clear()
+
+        for index in sorted(fans):
+            values = fans[index]
+            if "rpm" not in values or "duty" not in values:
+                continue
+            text = _("Fan {n}: {rpm} RPM / {duty}%").format(
+                n=index, rpm=round(values["rpm"]), duty=round(values["duty"])
+            )
+            label = Gtk.Label(label=text, halign=Gtk.Align.END, css_classes=["dim-label", "caption"])
+            self.system_box.append(label)
+            self._fan_detail_labels.append(label)
+
+    def _update_cpu(self) -> bool:
+        temp = system_sensors.get_cpu_temp()
+        if temp is None:
+            self.cpu_label.set_visible(False)
+        else:
+            unit = self.window.app.config.get("temp_unit", "C")
+            self.cpu_label.set_visible(True)
+            self.cpu_label.set_label(f"{self._cpu_name}: {self._format_temp(temp, unit)}")
+        return GLib.SOURCE_CONTINUE
 
     @staticmethod
     def _format_temp(celsius: float, unit: str) -> str:

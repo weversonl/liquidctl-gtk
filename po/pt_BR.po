@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: liquidctl-gui\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-12 00:12-0300\n"
+"POT-Creation-Date: 2026-07-12 00:24-0300\n"
 "PO-Revision-Date: 2026-07-10 05:07-0300\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese (Brazil)\n"
@@ -39,11 +39,11 @@ msgstr "Performance"
 msgid "Custom"
 msgstr "Personalizado"
 
-#: liquidctl_gui/ui/page_curves.py:31 liquidctl_gui/ui/page_dashboard.py:54
+#: liquidctl_gui/ui/page_curves.py:31 liquidctl_gui/ui/page_dashboard.py:59
 msgid "Pump"
 msgstr "Bomba"
 
-#: liquidctl_gui/ui/page_curves.py:31 liquidctl_gui/ui/page_dashboard.py:55
+#: liquidctl_gui/ui/page_curves.py:31 liquidctl_gui/ui/page_dashboard.py:60
 msgid "Fan"
 msgstr "Ventoinha"
 
@@ -75,15 +75,15 @@ msgstr ""
 msgid "Restore default"
 msgstr "Restaurar padrão"
 
-#: liquidctl_gui/ui/page_dashboard.py:47
+#: liquidctl_gui/ui/page_dashboard.py:52
 msgid "Connected"
 msgstr "Conectado"
 
-#: liquidctl_gui/ui/page_dashboard.py:53
+#: liquidctl_gui/ui/page_dashboard.py:58
 msgid "Liquid temperature"
 msgstr "Temperatura do líquido"
 
-#: liquidctl_gui/ui/page_dashboard.py:59
+#: liquidctl_gui/ui/page_dashboard.py:64
 msgid ""
 "No liquidctl devices were detected. Check USB connections and udev "
 "permissions."
@@ -91,17 +91,22 @@ msgstr ""
 "Nenhum dispositivo liquidctl foi detectado. Verifique as conexões USB e as "
 "permissões do udev."
 
-#: liquidctl_gui/ui/page_dashboard.py:114
-#: liquidctl_gui/ui/page_dashboard.py:118
+#: liquidctl_gui/ui/page_dashboard.py:135
+#: liquidctl_gui/ui/page_dashboard.py:147
 #, python-brace-format
 msgid "{rpm} RPM"
 msgstr "{rpm} RPM"
 
-#: liquidctl_gui/ui/page_dashboard.py:116
-#: liquidctl_gui/ui/page_dashboard.py:120
+#: liquidctl_gui/ui/page_dashboard.py:137
+#: liquidctl_gui/ui/page_dashboard.py:149
 #, python-brace-format
 msgid "{duty}% power"
 msgstr "{duty}% de potência"
+
+#: liquidctl_gui/ui/page_dashboard.py:162
+#, python-brace-format
+msgid "Fan {n}: {rpm} RPM / {duty}%"
+msgstr "Ventoinha n° {n}: {rpm} RPM / {duty}%"
 
 #: liquidctl_gui/ui/page_lighting.py:24
 msgid "Off"

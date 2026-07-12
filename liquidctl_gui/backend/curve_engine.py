@@ -30,6 +30,13 @@ DEFAULT_POLL_SECONDS = 2
 _FAN_DUTY_TOLERANCE = 5
 DEFAULT_VALIDATION_SECONDS = 60
 
+# Right after applying a curve is exactly when the race is most likely (see above),
+# so re-check quickly at first - then, once the fans agree (or we've retried enough
+# times without success), settle into the slower, user-configurable interval instead
+# of hammering the device forever at startup speed.
+_STARTUP_VALIDATION_SECONDS = 2
+_STARTUP_VALIDATION_MAX_ATTEMPTS = 10
+
 
 def interpolate_duty(curve: list[tuple[float, float]], temp: float) -> int:
     points = sorted(curve, key=lambda p: p[0])
@@ -57,6 +64,7 @@ class _ChannelJob:
     software_fallback: bool = False
     timeout_id: int | None = None
     validation_timeout_id: int | None = None
+    startup_checks_left: int = 0
 
 
 class CurveEngine:
@@ -83,7 +91,9 @@ class CurveEngine:
     def set_validation_interval(self, seconds: int) -> None:
         self._validation_seconds = max(5, seconds)
         for job in list(self._jobs.values()):
-            if job.validation_timeout_id is not None:
+            # Don't interrupt an in-progress startup fast-check phase - it'll pick up
+            # the new steady interval once it settles.
+            if job.validation_timeout_id is not None and job.startup_checks_left == 0:
                 GLib.source_remove(job.validation_timeout_id)
                 job.validation_timeout_id = GLib.timeout_add_seconds(
                     self._validation_seconds, self._validate_fan_duty, job
@@ -108,8 +118,9 @@ class CurveEngine:
                 job.timeout_id = None
                 job.software_fallback = False
             if channel == "fan" and job.validation_timeout_id is None:
+                job.startup_checks_left = _STARTUP_VALIDATION_MAX_ATTEMPTS
                 job.validation_timeout_id = GLib.timeout_add_seconds(
-                    self._validation_seconds, self._validate_fan_duty, job
+                    _STARTUP_VALIDATION_SECONDS, self._validate_fan_duty, job
                 )
 
         self._controller.set_speed_profile(device_key, channel, sorted(curve), on_done=on_done, on_error=on_error)
@@ -121,11 +132,26 @@ class CurveEngine:
 
         def on_status(status) -> None:
             duties = [value for key, value, _unit in status if "fan" in key.lower() and "duty" in key.lower()]
-            if len(duties) >= 2 and max(duties) - min(duties) > _FAN_DUTY_TOLERANCE:
+            mismatched = len(duties) >= 2 and max(duties) - min(duties) > _FAN_DUTY_TOLERANCE
+
+            if mismatched:
                 self._controller.set_speed_profile(job.device_key, job.channel, sorted(job.curve))
 
+            if job.startup_checks_left > 0:
+                if mismatched:
+                    job.startup_checks_left -= 1
+                    next_seconds = _STARTUP_VALIDATION_SECONDS
+                else:
+                    # Fans agree - startup settled, switch to the slow steady cadence.
+                    job.startup_checks_left = 0
+                    next_seconds = self._validation_seconds
+            else:
+                next_seconds = self._validation_seconds
+
+            job.validation_timeout_id = GLib.timeout_add_seconds(next_seconds, self._validate_fan_duty, job)
+
         self._controller.get_status(job.device_key, on_status)
-        return GLib.SOURCE_CONTINUE
+        return GLib.SOURCE_REMOVE
 
     def stop_channel(self, device_key: str, channel: str) -> None:
         job = self._jobs.pop((device_key, channel), None)

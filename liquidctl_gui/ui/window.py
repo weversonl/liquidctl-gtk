@@ -77,19 +77,27 @@ class LiquidctlGuiWindow(Adw.ApplicationWindow):
         content_toolbar = Adw.ToolbarView()
         content_toolbar.add_top_bar(header)
         content_toolbar.set_content(scroller)
+        content_toolbar.set_bottom_bar_style(Adw.ToolbarStyle.FLAT)
+        content_toolbar.add_bottom_bar(self.dashboard_page.system_box)
 
         self.sidebar = Sidebar(self)
-        self.sidebar.set_size_request(1, -1)
+        # A minimum this low let the paned handle be dragged until the sidebar
+        # became a sliver of a pixel wide - invisible and impossible to grab back.
+        self.sidebar.set_size_request(180, -1)
         content_toolbar.set_size_request(320, -1)
 
         self.split_view = Gtk.Paned(orientation=Gtk.Orientation.HORIZONTAL, wide_handle=False)
         self.split_view.set_start_child(self.sidebar)
         self.split_view.set_end_child(content_toolbar)
         self.split_view.set_resize_start_child(False)
-        self.split_view.set_shrink_start_child(True)
+        # False enforces the sidebar's size_request as a hard floor - with True, the
+        # handle could still be dragged past it down to (and hiding) zero width.
+        self.split_view.set_shrink_start_child(False)
         self.split_view.set_resize_end_child(True)
         self.split_view.set_shrink_end_child(False)
-        self.split_view.set_position(application.config.get("sidebar_width", 280))
+        # max() guards against a sidebar_width saved from before the fix above,
+        # which could still be as small as 1px.
+        self.split_view.set_position(max(180, application.config.get("sidebar_width", 280)))
         self.split_view.connect("notify::position", self._schedule_geometry_save)
         self.set_content(self.split_view)
 
@@ -100,6 +108,7 @@ class LiquidctlGuiWindow(Adw.ApplicationWindow):
         self.view_stack.set_visible_child_name(page_name)
         self.title_label.set_label(PAGE_TITLES.get(page_name, ""))
         self.sidebar.set_active_nav(page_name)
+        self.dashboard_page.system_box.set_visible(page_name == "dashboard")
 
     def refresh_devices(self) -> None:
         self.app.controller.refresh_devices(self._on_devices_loaded)
